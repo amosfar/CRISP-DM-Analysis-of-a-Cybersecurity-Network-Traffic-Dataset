@@ -1,48 +1,109 @@
-# CRISP-DM-Analysis-of-a-Cybersecurity-Network-Traffic-Dataset
-# CRISP-DM Analysis of Cybersecurity Network-Traffic Data
+<div align="center">
 
-An individual data mining and machine learning project built for the **Fundamentals of AI & Data Science (COMPH2706)** module at TU Dublin[cite: 3].
+# 🛡️ Cybersecurity Network Traffic Analysis
 
-## 📌 Project Overview
-This project applies the **CRISP-DM** framework to a synthetic cybersecurity network-traffic dataset containing 6,000 sessions and 19 features[cite: 3]. The objective is to assist a targeted financial organisation through two analytical goals[cite: 3]:
-1. **Classification:** Predicting whether a network session is an attack (`is_attack`) to enable early, automated threat detection[cite: 3].
-2. **Regression:** Predicting session duration (`session_duration`) as a proxy for attacker persistence to prioritize incident response triage[cite: 3].
+### A CRISP-DM machine-learning study of network sessions
 
----
+Explore network traffic, build attack-detection classifiers, and estimate session duration with supervised learning.
 
-## 📂 Dataset & Preprocessing Pipeline
-* **Dataset Size:** 6,000 network sessions, 19 features, and 2 target variables[cite: 3].
-* **Class Imbalance:** 74.7% Benign sessions vs. 25.3% Attack sessions[cite: 3].
-* **Data Cleaning & Preprocessing:**
-  * **Protocol Normalization:** Resolved mixed-case inconsistencies (e.g., `"tcp"` to `"TCP"`, `"Udp"` to `"UDP"`)[cite: 3].
-  * **Imputation:** Applied mode imputation for categorical missing values and median imputation for numeric attributes (robust to skewed data)[cite: 3].
-  * **Outlier Handling:** Retained extreme values as critical behavioral indicators rather than treating them as noise[cite: 3].
-  * **Feature Engineering:** Constructed domain-informed attributes (`bytes_ratio` and `failed_login_rate`) to capture advanced threat signals[cite: 3].
-  * **Scaling & Splitting:** Performed an 80/20 stratified split prior to resampling, utilizing `StandardScaler` and `MinMaxScaler` appropriately for different algorithms[cite: 3].
+[![Python](https://img.shields.io/badge/Python-Jupyter%20Notebook-F37626?logo=jupyter&logoColor=white)](https://jupyter.org/)
+[![Framework](https://img.shields.io/badge/Methodology-CRISP--DM-2563EB)](#-methodology)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+</div>
 
 ---
 
-## 🤖 Modeling & Evaluation
+## Project overview
 
-### Classification Models
-Evaluated multiple eager and lazy learning algorithms using an 80/20 train-test split and 5-fold stratified cross-validation[cite: 3]:
-* **Decision Tree (Baseline & Enhanced):** The simple depth=3 baseline achieved the highest F1 score (0.459) and AUC (0.671) while remaining fully interpretable via IF-THEN rules[cite: 3].
-* **Naïve Bayes (ComplementNB):** Utilized Laplace smoothing ($\alpha = 1$) to handle missing attribute-class probabilities[cite: 3].
-* **K-Nearest Neighbors (KNN):** Tuned $k=3$ via the Elbow Method, testing both Manhattan and Euclidean distance metrics[cite: 3].
-* **Random Forest & Threshold Tuning:** Demonstrated the danger of relying on accuracy with imbalanced data; lowered the default decision threshold from $t=0.50$ to $t=0.20$ to dramatically boost recall from $2.3\%$ to $82.9\%$ for critical security triage[cite: 3].
+This academic project applies the **CRISP-DM** process to a cybersecurity network-traffic dataset. It uses exploratory analysis and machine-learning models to investigate two tasks:
 
-### Regression Models
-* **Linear & Ridge Regression ($\alpha = 10$):** Attempted to predict session duration, yielding an $R^2$ of 0.462 and an RMSE of 12.22 minutes, indicating that session duration is moderately predictable from network metrics alone[cite: 3].
+- **Classification:** predict whether a session is an `Attack` or `Benign` (`is_attack`).
+- **Regression:** estimate session duration (`session_duration`) to explore its potential use in investigation prioritisation.
 
----
+The dataset is described in the project as synthetic and contains 6,000 sessions. This is an educational analysis; model predictions are not a substitute for security monitoring or analyst review.
 
-## 🚀 Code & Notebook Reference
-The complete Python code, data preprocessing pipeline, classification/regression models, and visualizations are available in the Google Colab notebook[cite: 3]:
-* 👉 [Google Colab Notebook Link](https://colai.research.google.com/drive/17vjSrPGQlT7Nwu-zkFWlNHBsDfdB_eLh?usp=sharing)[cite: 3]
-* *Note: Ensure `Dataset1_even_students.csv` is placed in the working directory before execution.*[cite: 3]
+## Methodology
 
----
+The notebook follows the main CRISP-DM stages:
 
-## 👤 Author
-* **Amos Farcau** (Student ID: B00169532)[cite: 3]
-* **Module:** Fundamentals of AI & Data Science (COMPH2706) – TU Dublin[cite: 3]
+1. **Business understanding** — frame attack detection and session-duration prediction as analysis goals.
+2. **Data understanding** — inspect distributions, missing values, class balance, correlations, and protocol values.
+3. **Data preparation** — normalize protocol labels, impute missing data, retain potentially meaningful outliers, engineer features, encode categories, scale numeric inputs, and split data for evaluation.
+4. **Modeling** — train and compare classification and regression models.
+5. **Evaluation** — assess models with classification metrics, cross-validation, confusion matrices, ROC curves, and regression metrics.
+6. **Deployment / next steps** — consider how findings could inform further investigation; this repository does not provide a production deployment pipeline.
+
+### Feature engineering
+
+The notebook adds two domain-motivated features:
+
+- `bytes_ratio` — sent bytes relative to received bytes.
+- `failed_login_rate` — failed logins relative to login attempts.
+
+### Models explored
+
+| Task | Models | Evaluation examples |
+| --- | --- | --- |
+| Attack classification | Decision Tree, Complement Naïve Bayes, K-Nearest Neighbors, Random Forest | Accuracy, precision, recall, F1, ROC-AUC, confusion matrix, stratified cross-validation |
+| Session-duration regression | Linear Regression, Ridge Regression | RMSE, MAE, R², residual analysis |
+
+Recall receives particular attention in the classification task because missed attacks may be more costly than false alarms. Threshold changes also affect the precision/recall trade-off and should be assessed against the intended use case.
+
+## Repository contents
+
+```text
+.
+├── COMP_H2706_Full_Project_Code.ipynb  # End-to-end analysis and visualizations
+├── Dataset1_even_students.csv          # Dataset used by the notebook
+├── LICENSE
+└── README.md
+```
+
+## Getting started
+
+### Requirements
+
+Python 3 with Jupyter Notebook or JupyterLab, plus the packages imported by the notebook:
+
+- `pandas`
+- `numpy`
+- `matplotlib`
+- `seaborn`
+- `scikit-learn`
+
+Install the dependencies with:
+
+```bash
+python -m pip install pandas numpy matplotlib seaborn scikit-learn jupyter
+```
+
+### Run the notebook
+
+1. Clone or download this repository.
+2. Keep `Dataset1_even_students.csv` in the same directory as the notebook.
+3. Start Jupyter from the repository directory:
+
+   ```bash
+   jupyter notebook
+   ```
+
+4. Open `COMP_H2706_Full_Project_Code.ipynb` and run the cells from top to bottom.
+
+The notebook reads the dataset using the relative filename `Dataset1_even_students.csv`. It includes data exploration, preprocessing, model training, visualizations, and results summaries. You can also [view the notebook on GitHub](COMP_H2706_Full_Project_Code.ipynb).
+
+## Interpretation and limitations
+
+- This is an academic, dataset-specific experiment—not a validated operational intrusion-detection system.
+- Synthetic or curated data may not represent the diversity and drift of real network traffic.
+- Results depend on preprocessing, split strategy, class balance, model settings, and decision thresholds. Validate any conclusions on appropriate independent data before practical use.
+- A high recall can come with more false positives; select thresholds with the costs of both error types in mind.
+- Do not use the notebook's predictions alone to block traffic or make incident-response decisions.
+
+## Project context
+
+Created for **Fundamentals of AI & Data Science (COMPH2706)** at **TU Dublin**.
+
+## License
+
+This project is distributed under the [MIT License](LICENSE).
